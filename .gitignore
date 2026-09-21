@@ -1,8 +1,15 @@
 .env
 .venv/
 credentials/
+terraform/.terraform/
 service-account*.json
 __pycache__/
 *.py[cod]
 .pytest_cache/
 *.egg-info/
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+.terraform.lock.hcl
