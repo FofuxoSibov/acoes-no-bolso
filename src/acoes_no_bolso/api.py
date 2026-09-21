@@ -15,7 +15,7 @@ from fastapi.responses import FileResponse
 from .dashboard import create_app
 import os
 
-static_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "static")
+static_dir = os.path.join(os.getcwd(), "static")
 
 app = FastAPI(title="API Ações no Bolso")
 

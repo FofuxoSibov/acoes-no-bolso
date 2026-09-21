@@ -73,6 +73,7 @@ resource "aws_instance" "app" {
     env_file_content           = var.env_file_content
     google_credentials_content = var.google_credentials_content
   })
+  user_data_replace_on_change = true
 
   root_block_device {
     volume_size = 20
