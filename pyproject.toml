@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "acoes-no-bolso"
+version = "0.1.0"
+description = "Coleta e visualização de dados de ações brasileiras"
+requires-python = ">=3.11"
+dependencies = [
+    "dash>=3.0,<4.0",
+    "google-api-python-client>=2.0,<3.0",
+    "google-auth>=2.0,<3.0",
+    "httpx>=0.27,<1.0",
+    "openpyxl>=3.1,<4.0",
+    "pandas>=2.2,<3.0",
+    "plotly>=6.0,<7.0",
+    "python-dotenv>=1.0,<2.0",
+    "fastapi>=0.100,<1.0",
+    "uvicorn>=0.30,<1.0",
+    "gspread>=6.1,<7.0",
+    "gspread-dataframe>=3.3,<4.0"
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0,<9.0"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[project.scripts]
+acoes-collect = "acoes_no_bolso.collect:main"
+acoes-dashboard = "acoes_no_bolso.dashboard:main"
+acoes-api = "acoes_no_bolso.api:main"

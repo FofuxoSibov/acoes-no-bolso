@@ -1,0 +1,13 @@
+#Comando para instalar as dependências: python -m pip install -r requirements.txt
+# Dependências de execução
+dash>=3.0,<4.0
+google-api-python-client>=2.0,<3.0
+google-auth>=2.0,<3.0
+httpx>=0.27,<1.0
+openpyxl>=3.1,<4.0
+pandas>=2.2,<3.0
+plotly>=6.0,<7.0
+python-dotenv>=1.0,<2.0
+
+# Testes
+pytest>=8.0,<9.0

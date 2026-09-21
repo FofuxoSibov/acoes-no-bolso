@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Ações no Bolso</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Ações no Bolso</h1>
+        <button id="collect-btn">Atualizar Dados (BRAPI)</button>
+    </header>
+    
+    <main>
+        <div id="status-message" class="hidden"></div>
+
+        <section class="data-section" style="margin-bottom: 2rem;">
+            <h2>Evolução dos Preços por Ticker</h2>
+            <div style="position: relative; height: 400px; width: 100%;">
+                <canvas id="priceChart"></canvas>
+            </div>
+        </section>
+        
+        <section class="data-section">
+            <h2>Histórico de Cotações</h2>
+            <div class="table-container">
+                <table id="history-table">
+                    <thead>
+                        <!-- As colunas serão geradas dinamicamente -->
+                    </thead>
+                    <tbody>
+                        <!-- Os dados serão inseridos aqui -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
+
