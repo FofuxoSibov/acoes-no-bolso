@@ -5,6 +5,6 @@ output "public_ip" {
 
 output "app_url" {
   description = "URL para acessar a aplicação"
-  value       = "http://${module.app_server.public_ip}:8000"
+  value       = "http://${module.app_server.public_ip}"
 }
 

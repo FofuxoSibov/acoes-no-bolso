@@ -51,4 +51,4 @@ EOF
 docker build -t acoes-api .
 
 # Run
-docker run -d -p 8000:8000 --name acoes_app --restart always --env-file .env -v $(pwd)/credentials:/app/credentials acoes-api
+docker run -d -p 80:8000 --name acoes_app --restart always --env-file .env -v $(pwd)/credentials:/app/credentials acoes-api
