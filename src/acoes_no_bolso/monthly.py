@@ -80,7 +80,7 @@ def merge_monthly_history(existing: pd.DataFrame, snapshot: pd.DataFrame) -> pd.
 
     return (
         combined.sort_values(["ticker", "reference_month", "collected_at"])
-        .drop_duplicates(subset=["ticker", "reference_month"], keep="last")
+        .drop_duplicates(subset=["ticker", "collected_at"], keep="last")
         .sort_values(["reference_month", "ticker"])
         .reset_index(drop=True)[HISTORY_COLUMNS]
     )
