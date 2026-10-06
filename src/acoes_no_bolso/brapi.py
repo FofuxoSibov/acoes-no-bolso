@@ -120,7 +120,11 @@ def _first_quote_data(payload: object) -> StockQuoteData:
     if not isinstance(first_result, Mapping):
         raise BrapiResponseError("O primeiro resultado da BRAPI é inválido.")
 
-    return cast(StockQuoteData, first_result)
+    data = first_result.get("data")
+    if not isinstance(data, dict):
+        raise BrapiResponseError("A BRAPI não retornou results[0].data para o ticker solicitado.")
+
+    return cast(StockQuoteData, data)
 
 
 def _safe_error_detail(response: httpx.Response) -> str:
