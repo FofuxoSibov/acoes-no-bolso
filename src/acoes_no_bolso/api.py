@@ -48,6 +48,11 @@ def startup_event():
         import logging
         logging.warning(f"Não foi possível inicializar o dashboard Dash. Erro: {e}")
 
+@app.get("/api/tickers")
+def get_tickers():
+    """Retorna os tickers configurados no momento."""
+    return {"tickers": settings.tickers}
+
 @app.post("/api/collect")
 def collect_data():
     """Aciona a coleta da BRAPI para todos os tickers e atualiza o Sheets."""
@@ -55,6 +60,7 @@ def collect_data():
         with httpx.Client() as client:
             snapshot = collect_monthly_quotes(settings.tickers, http_client=client)
         merged = repository.upsert_snapshot(snapshot)
+        repository.update_tickers_sheet(settings.tickers)
         return {"status": "success", "rows_updated": len(merged)}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

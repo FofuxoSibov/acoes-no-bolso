@@ -65,6 +65,20 @@ class GoogleSheetsRepository:
             # Cria a aba se não existir
             return spreadsheet.add_worksheet(title=self._worksheet, rows=1000, cols=20)
 
+    def update_tickers_sheet(self, tickers: tuple[str, ...]) -> None:
+        if self._client is None:
+            self._get_worksheet() # just to initialize client
+            
+        spreadsheet = self._client.open_by_key(self._file_id)
+        try:
+            sheet = spreadsheet.worksheet("tickers")
+        except gspread.exceptions.WorksheetNotFound:
+            sheet = spreadsheet.add_worksheet(title="tickers", rows=100, cols=1)
+            
+        df = pd.DataFrame({"tickers_disponiveis": list(tickers)})
+        sheet.clear()
+        set_with_dataframe(sheet, df)
+
     @staticmethod
     def _normalize_history(history: pd.DataFrame) -> pd.DataFrame:
         result = history.copy()

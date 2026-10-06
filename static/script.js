@@ -30,8 +30,24 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 5000);
     }
 
+    async function loadTickers() {
+        try {
+            const response = await fetch('/api/tickers');
+            if (response.ok) {
+                const data = await response.json();
+                const tickersList = document.getElementById('tickers-list');
+                if (tickersList) {
+                    tickersList.textContent = 'Tickers disponíveis: ' + data.tickers.join(', ');
+                }
+            }
+        } catch (error) {
+            console.error('Erro ao carregar tickers:', error);
+        }
+    }
+
     async function loadData() {
         try {
+            await loadTickers();
             const response = await fetch('/api/history');
             if (!response.ok) throw new Error('Erro ao buscar dados');
             const data = await response.json();
