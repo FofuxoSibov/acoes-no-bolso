@@ -1,5 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const collectBtn = document.getElementById('collect-btn');
+    const addTickerBtn = document.getElementById('add-ticker-btn');
+    const newTickerInput = document.getElementById('new-ticker');
     const statusMessage = document.getElementById('status-message');
     const historyTable = document.getElementById('history-table');
     const thead = historyTable.querySelector('thead');
@@ -44,6 +46,37 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Erro ao carregar tickers:', error);
         }
     }
+
+    addTickerBtn.addEventListener('click', async () => {
+        const ticker = newTickerInput.value.trim();
+        if (!ticker) return;
+
+        addTickerBtn.disabled = true;
+        showStatus('Adicionando ticker...');
+
+        try {
+            const response = await fetch('/api/tickers', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ticker })
+            });
+            const result = await response.json();
+            
+            if (!response.ok) throw new Error(result.detail || 'Erro ao adicionar');
+            
+            if (result.status === 'success') {
+                showStatus(`Ticker ${ticker} adicionado!`);
+                newTickerInput.value = '';
+                await loadTickers();
+            } else {
+                showStatus(`Ticker ${ticker} já estava na lista.`, false);
+            }
+        } catch (error) {
+            showStatus(error.message, true);
+        } finally {
+            addTickerBtn.disabled = false;
+        }
+    });
 
     async function loadData() {
         try {

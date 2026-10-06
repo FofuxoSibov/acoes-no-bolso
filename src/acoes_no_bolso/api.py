@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import httpx
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.wsgi import WSGIMiddleware
 from fastapi.staticfiles import StaticFiles
 import uvicorn
@@ -51,16 +51,33 @@ def startup_event():
 @app.get("/api/tickers")
 def get_tickers():
     """Retorna os tickers configurados no momento."""
-    return {"tickers": settings.tickers}
+    active_tickers = repository.get_active_tickers(settings.tickers)
+    return {"tickers": active_tickers}
+
+@app.post("/api/tickers")
+async def add_ticker(request: Request):
+    """Adiciona um novo ticker à lista."""
+    data = await request.json()
+    new_ticker = data.get("ticker", "").strip().upper()
+    if not new_ticker:
+        raise HTTPException(status_code=400, detail="Ticker inválido")
+    
+    current_tickers = repository.get_active_tickers(settings.tickers)
+    if new_ticker not in current_tickers:
+        updated_tickers = tuple(list(current_tickers) + [new_ticker])
+        repository.update_tickers_sheet(updated_tickers)
+        return {"status": "success", "tickers": updated_tickers}
+    return {"status": "ignored", "message": "Ticker já existe"}
 
 @app.post("/api/collect")
 def collect_data():
     """Aciona a coleta da BRAPI para todos os tickers e atualiza o Sheets."""
     try:
+        active_tickers = repository.get_active_tickers(settings.tickers)
         with httpx.Client() as client:
-            snapshot = collect_monthly_quotes(settings.tickers, http_client=client)
+            snapshot = collect_monthly_quotes(active_tickers, http_client=client)
         merged = repository.upsert_snapshot(snapshot)
-        repository.update_tickers_sheet(settings.tickers)
+        repository.update_tickers_sheet(active_tickers)
         return {"status": "success", "rows_updated": len(merged)}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

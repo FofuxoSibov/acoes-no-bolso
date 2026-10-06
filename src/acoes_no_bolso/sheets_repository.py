@@ -78,6 +78,25 @@ class GoogleSheetsRepository:
         df = pd.DataFrame({"tickers_disponiveis": list(tickers)})
         sheet.clear()
         set_with_dataframe(sheet, df)
+        
+    def get_active_tickers(self, fallback_tickers: tuple[str, ...]) -> tuple[str, ...]:
+        if self._client is None:
+            self._get_worksheet() # initialize client
+            
+        spreadsheet = self._client.open_by_key(self._file_id)
+        try:
+            sheet = spreadsheet.worksheet("tickers")
+            df = get_as_dataframe(sheet, evaluate_formulas=True).dropna(how='all')
+            if not df.empty and "tickers_disponiveis" in df.columns:
+                # Remove empty cells and return as tuple
+                valid_tickers = df["tickers_disponiveis"].dropna().astype(str).str.strip().tolist()
+                valid_tickers = [t.upper() for t in valid_tickers if t]
+                if valid_tickers:
+                    return tuple(dict.fromkeys(valid_tickers)) # remove duplicates
+        except gspread.exceptions.WorksheetNotFound:
+            pass
+            
+        return fallback_tickers
 
     @staticmethod
     def _normalize_history(history: pd.DataFrame) -> pd.DataFrame:
